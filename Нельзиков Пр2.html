@@ -1,0 +1,1616 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Сервисные работы - UX/UI прототип</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --primary: #2563eb;
+      --danger: #dc2626;
+      --ok: #16a34a;
+      --warn: #d97706;
+      --shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+      --radius: 14px;
+      --pad: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Times New Roman", Times, serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+    a { color: var(--primary); text-decoration: none; }
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: 16px;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--card);
+      border-right: 1px solid var(--line);
+      padding: 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
+    .brand h1 {
+      font-size: 18px;
+      margin: 0;
+      font-weight: 700;
+    }
+    .brand .sub {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .block {
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .block h3 {
+      margin: 0 0 8px 0;
+      font-size: 15px;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .label { font-size: 14px; color: var(--muted); }
+
+    select, input, textarea {
+      width: 100%;
+      padding: 10px 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      outline: none;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 120ms;
+      font-weight: 700;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .btn.danger {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #fff;
+    }
+    .btn.ghost {
+      background: transparent;
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .nav button {
+      width: 100%;
+      text-align: left;
+    }
+    .nav .active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    /* Main */
+    .main {
+      padding: 18px;
+      overflow: auto;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .title h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+    .title p {
+      margin: 6px 0 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+    @media (max-width: 1100px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { height: auto; position: relative; }
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: var(--pad);
+    }
+    .card h3 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+    }
+    .muted { color: var(--muted); }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .chip.ok { border-color: rgba(22, 163, 74, 0.35); background: rgba(22, 163, 74, 0.06); }
+    .chip.warn { border-color: rgba(217, 119, 6, 0.35); background: rgba(217, 119, 6, 0.06); }
+    .chip.info { border-color: rgba(37, 99, 235, 0.35); background: rgba(37, 99, 235, 0.06); }
+    .chip.bad { border-color: rgba(220, 38, 38, 0.35); background: rgba(220, 38, 38, 0.06); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      background: #f9fafb;
+      font-weight: 700;
+    }
+    tr:hover td { background: #fafafa; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 700px) {
+      .two { grid-template-columns: 1fr; }
+    }
+
+    /* States */
+    .state {
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .state strong { color: var(--text); }
+
+    /* Toast */
+    .toasts {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      display: grid;
+      gap: 10px;
+      z-index: 50;
+      max-width: 360px;
+    }
+    .toast {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 12px;
+      display: grid;
+      gap: 6px;
+    }
+    .toast .t { font-weight: 700; }
+    .toast.ok { border-color: rgba(22, 163, 74, 0.35); }
+    .toast.bad { border-color: rgba(220, 38, 38, 0.35); }
+    .toast.info { border-color: rgba(37, 99, 235, 0.35); }
+
+    /* Modal */
+    .modalBack {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 60;
+      padding: 14px;
+    }
+    .modal {
+      width: min(680px, 100%);
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+    .modalHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .modalHeader h3 { margin: 0; }
+    .modalFooter {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .small { font-size: 13px; color: var(--muted); }
+    .hr { height: 1px; background: var(--line); margin: 10px 0; }
+    .kbd {
+      font-family: "Times New Roman", Times, serif;
+      border: 1px solid var(--line);
+      border-bottom-width: 2px;
+      border-radius: 8px;
+      padding: 2px 8px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Сервисные работы</h1>
+        <div class="sub">Интеграция "Сервисные работы" и "Персонал"</div>
+      </div>
+
+      <div class="block">
+        <h3>Роль пользователя</h3>
+        <div class="label">Выбери роль для просмотра экранов</div>
+        <div style="height:8px"></div>
+        <select id="roleSelect">
+          <option value="store">Управляющий магазином</option>
+          <option value="office">Управляющий офисом</option>
+          <option value="hr">Специалист HR</option>
+        </select>
+      </div>
+
+      <div class="block">
+        <h3>Навигация</h3>
+        <div class="nav" id="nav"></div>
+        <div style="height:10px"></div>
+        <div class="small">
+          Подсказка: прототип имитирует действия. Данные не сохраняются на сервере.
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Статусы</h3>
+        <div class="chips">
+          <span class="chip info">новый</span>
+          <span class="chip warn">в работе</span>
+          <span class="chip ok">выполнен</span>
+          <span class="chip ok">закрыт</span>
+          <span class="chip bad">отменен</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Состояния интерфейса</h3>
+        <div class="small">
+          В экранах есть примеры: пустой список, загрузка, ошибки, нет доступа.
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Автор</h3>
+        <div class="small">
+          Задание выполнил студент группы ИСП-224<br />
+          Нельзиков Илья Дмитриевич
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="title">
+          <h2 id="pageTitle">Экран</h2>
+          <p id="pageDesc">Описание экрана</p>
+        </div>
+        <div class="row">
+          <button class="btn ghost" id="btnSimLoad">Показать загрузку</button>
+          <button class="btn ghost" id="btnSimNoAccess">Показать нет доступа</button>
+          <button class="btn ghost" id="btnSimEmpty">Показать пусто</button>
+        </div>
+      </div>
+
+      <div id="content"></div>
+    </main>
+  </div>
+
+  <div class="toasts" id="toasts"></div>
+
+  <div class="modalBack" id="modalBack" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modalHeader">
+        <div>
+          <h3 id="modalTitle">Подтверждение</h3>
+          <div class="small" id="modalText">Текст</div>
+        </div>
+        <button class="btn" id="modalClose">Закрыть</button>
+      </div>
+      <div class="hr"></div>
+      <div id="modalBody"></div>
+      <div class="modalFooter" id="modalFooter"></div>
+    </div>
+  </div>
+
+<script>
+  // --------------------------
+  // Данные (примеры)
+  // --------------------------
+  const tasks = [
+    {
+      id: "SR-101",
+      workName: "Инвентаризация склада",
+      dateFrom: "2026-02-10",
+      dateTo: "2026-02-10",
+      wishes: "Опыт инвентаризации, аккуратность",
+      spec: "кладовщик",
+      status: "новый",
+      store: "Магазин 12",
+      assignees: []
+    },
+    {
+      id: "SR-102",
+      workName: "Клининг торгового зала",
+      dateFrom: "2026-02-11",
+      dateTo: "2026-02-11",
+      wishes: "Наличие сменной обуви, пунктуальность",
+      spec: "клининг",
+      status: "в работе",
+      store: "Магазин 7",
+      assignees: []
+    },
+    {
+      id: "SR-103",
+      workName: "Ремонт стеллажей",
+      dateFrom: "2026-02-12",
+      dateTo: "2026-02-12",
+      wishes: "Наличие инструмента, опыт ремонта",
+      spec: "ремонт",
+      status: "в работе",
+      store: "Магазин 3",
+      assignees: []
+    }
+  ];
+
+  const personnel = [
+    { id: "P-01", name: "Иванов Сергей", spec: "клининг", rating: 4.6, city: "Москва", type: "самозанятый" },
+    { id: "P-02", name: "Петрова Анна", spec: "клининг", rating: 4.8, city: "Москва", type: "физлицо" },
+    { id: "P-03", name: "Сидоров Максим", spec: "ремонт", rating: 4.4, city: "Москва", type: "самозанятый" },
+    { id: "P-04", name: "Кузнецов Олег", spec: "кладовщик", rating: 4.2, city: "Москва", type: "физлицо" }
+  ];
+
+  const hrRequests = [
+    {
+      id: "HR-201",
+      fromTaskId: "SR-103",
+      workName: "Ремонт стеллажей",
+      dates: "2026-02-12",
+      spec: "ремонт",
+      status: "в работе",
+      comment: "Нужно 1-2 человека, желательно с инструментом"
+    }
+  ];
+
+  // --------------------------
+  // Роли и экраны
+  // --------------------------
+  const screens = {
+    store: [
+      { id: "store_list", name: "Список заданий" },
+      { id: "store_form", name: "Создание и редактирование" }
+    ],
+    office: [
+      { id: "office_inbox", name: "Задания в работе" },
+      { id: "office_task", name: "Карточка задания" }
+    ],
+    hr: [
+      { id: "hr_list", name: "Заявки на подбор" },
+      { id: "hr_card", name: "Карточка заявки" }
+    ]
+  };
+
+  const pageTitle = document.getElementById("pageTitle");
+  const pageDesc = document.getElementById("pageDesc");
+  const content = document.getElementById("content");
+  const nav = document.getElementById("nav");
+  const roleSelect = document.getElementById("roleSelect");
+
+  let state = {
+    role: "store",
+    screen: "store_list",
+    selectedTaskId: "SR-102",
+    selectedHrId: "HR-201",
+    uiState: "normal" // normal | loading | empty | noaccess
+  };
+
+  // --------------------------
+  // UI helpers
+  // --------------------------
+  function statusChip(status) {
+    const map = {
+      "новый": "info",
+      "в работе": "warn",
+      "выполнен": "ok",
+      "закрыт": "ok",
+      "отменен": "bad"
+    };
+    return `<span class="chip ${map[status] || "info"}">${status}</span>`;
+  }
+
+  function toast(type, title, text) {
+    const wrap = document.getElementById("toasts");
+    const el = document.createElement("div");
+    el.className = `toast ${type}`;
+    el.innerHTML = `<div class="t">${title}</div><div class="small">${text}</div>`;
+    wrap.appendChild(el);
+    setTimeout(() => el.remove(), 3200);
+  }
+
+  function openModal(title, text, bodyHtml, actions) {
+    const back = document.getElementById("modalBack");
+    document.getElementById("modalTitle").textContent = title;
+    document.getElementById("modalText").textContent = text || "";
+    document.getElementById("modalBody").innerHTML = bodyHtml || "";
+    const footer = document.getElementById("modalFooter");
+    footer.innerHTML = "";
+    (actions || []).forEach(a => {
+      const b = document.createElement("button");
+      b.className = "btn " + (a.kind || "");
+      b.textContent = a.label;
+      b.onclick = () => {
+        if (a.onClick) a.onClick();
+        closeModal();
+      };
+      footer.appendChild(b);
+    });
+    back.style.display = "flex";
+    back.setAttribute("aria-hidden", "false");
+  }
+
+  function closeModal() {
+    const back = document.getElementById("modalBack");
+    back.style.display = "none";
+    back.setAttribute("aria-hidden", "true");
+  }
+
+  document.getElementById("modalClose").onclick = closeModal;
+  document.getElementById("modalBack").addEventListener("click", (e) => {
+    if (e.target.id === "modalBack") closeModal();
+  });
+
+  // --------------------------
+  // Render navigation
+  // --------------------------
+  function renderNav() {
+    nav.innerHTML = "";
+    screens[state.role].forEach(s => {
+      const b = document.createElement("button");
+      b.className = "btn " + (state.screen === s.id ? "active" : "");
+      b.textContent = s.name;
+      b.onclick = () => {
+        state.screen = s.id;
+        state.uiState = "normal";
+        render();
+      };
+      nav.appendChild(b);
+    });
+  }
+
+  // --------------------------
+  // UI State banners
+  // --------------------------
+  function renderUiState() {
+    if (state.uiState === "loading") {
+      return `
+        <div class="card">
+          <h3>Загрузка</h3>
+          <div class="state">
+            <strong>Идет загрузка данных</strong><br />
+            Пример состояния ожидания. Можно добавить спиннер в реальном интерфейсе.
+          </div>
+        </div>
+      `;
+    }
+    if (state.uiState === "noaccess") {
+      return `
+        <div class="card">
+          <h3>Нет доступа</h3>
+          <div class="state">
+            <strong>Недостаточно прав</strong><br />
+            У пользователя нет прав на просмотр данного раздела.
+          </div>
+        </div>
+      `;
+    }
+    if (state.uiState === "empty") {
+      return `
+        <div class="card">
+          <h3>Пустой список</h3>
+          <div class="state">
+            <strong>Нет записей</strong><br />
+            Например, не найдено заданий по фильтрам, или заявок нет.
+          </div>
+        </div>
+      `;
+    }
+    return "";
+  }
+
+  // --------------------------
+  // Store screens
+  // --------------------------
+  function renderStoreList() {
+    pageTitle.textContent = "Управляющий магазином - Список заданий";
+    pageDesc.textContent = "Просмотр, создание, редактирование, отправка и отмена заданий";
+    const my = tasks.filter(t => t.store.startsWith("Магазин"));
+    const rows = my.map(t => `
+      <tr>
+        <td><strong>${t.id}</strong><br /><span class="small">${t.store}</span></td>
+        <td>${t.workName}<br /><span class="small">${t.dateFrom} - ${t.dateTo}</span></td>
+        <td>${statusChip(t.status)}</td>
+        <td class="actions">
+          <button class="btn" onclick="goEditTask('${t.id}')">Открыть</button>
+          <button class="btn primary" onclick="sendTask('${t.id}')">Отправить</button>
+          <button class="btn danger" onclick="cancelTask('${t.id}')">Отменить</button>
+        </td>
+      </tr>
+    `).join("");
+
+    return `
+      <div class="grid">
+        <div class="card">
+          <h3>Задания магазина</h3>
+          <div class="small">Поддерживаются статусы: новый, в работе, выполнен, закрыт, отменен</div>
+          <div style="height:10px"></div>
+
+          <div class="two">
+            <div>
+              <div class="label">Фильтр по статусу</div>
+              <select id="storeStatusFilter">
+                <option value="">все</option>
+                <option value="новый">новый</option>
+                <option value="в работе">в работе</option>
+                <option value="выполнен">выполнен</option>
+                <option value="закрыт">закрыт</option>
+                <option value="отменен">отменен</option>
+              </select>
+            </div>
+            <div>
+              <div class="label">Поиск по названию</div>
+              <input id="storeSearch" placeholder="например, клининг" />
+            </div>
+          </div>
+
+          <div style="height:10px"></div>
+          <div class="actions">
+            <button class="btn primary" onclick="newTask()">Создать задание</button>
+            <button class="btn" onclick="applyStoreFilters()">Применить фильтры</button>
+            <span class="small">Горячая клавиша: <span class="kbd">Esc</span> закрыть окно</span>
+          </div>
+
+          <div style="height:12px"></div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Работы и даты</th>
+                <th>Статус</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="storeTableBody">
+              ${rows}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h3>Подсказки по сценарию</h3>
+          <div class="state">
+            <strong>Создание</strong><br />
+            Создай задачу и сохрани. Она будет в статусе "новый".<br /><br />
+            <strong>Отправка</strong><br />
+            Нажми "Отправить". Статус станет "в работе" и задание увидит офис.<br /><br />
+            <strong>Отмена</strong><br />
+            Для некорректной заявки можно выбрать "Отменить".
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderStoreForm(taskId) {
+    const t = tasks.find(x => x.id === taskId) || tasks[0];
+    pageTitle.textContent = "Управляющий магазином - Создание и редактирование";
+    pageDesc.textContent = "Форма задания и действия: сохранить, отправить, отменить";
+
+    return `
+      <div class="grid">
+        <div class="card">
+          <h3>Карточка задания ${t.id}</h3>
+          <div class="chips">
+            ${statusChip(t.status)}
+            <span class="chip">${t.store}</span>
+          </div>
+          <div style="height:12px"></div>
+
+          <div class="two">
+            <div>
+              <div class="label">Наименование работ</div>
+              <input id="fWorkName" value="${escapeHtml(t.workName)}" placeholder="например, клининг" />
+            </div>
+            <div>
+              <div class="label">Категория (специализация)</div>
+              <select id="fSpec">
+                ${["клининг","ремонт","кладовщик","прочее"].map(s => `
+                  <option value="${s}" ${t.spec === s ? "selected" : ""}>${s}</option>
+                `).join("")}
+              </select>
+            </div>
+          </div>
+
+          <div style="height:10px"></div>
+          <div class="two">
+            <div>
+              <div class="label">Дата начала</div>
+              <input id="fDateFrom" type="date" value="${t.dateFrom}" />
+            </div>
+            <div>
+              <div class="label">Дата окончания</div>
+              <input id="fDateTo" type="date" value="${t.dateTo}" />
+            </div>
+          </div>
+
+          <div style="height:10px"></div>
+          <div>
+            <div class="label">Пожелания к исполнителям</div>
+            <textarea id="fWishes" placeholder="минимальный набор требований">${escapeHtml(t.wishes)}</textarea>
+          </div>
+
+          <div style="height:12px"></div>
+          <div class="actions">
+            <button class="btn" onclick="saveTask('${t.id}')">Сохранить</button>
+            <button class="btn primary" onclick="sendTask('${t.id}')">Отправить в офис</button>
+            <button class="btn danger" onclick="cancelTask('${t.id}')">Отменить</button>
+          </div>
+
+          <div style="height:8px"></div>
+          <div class="small">
+            Правило: пока статус "новый", можно редактировать. После отправки редактирование ограничивается.
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Сообщения и ошибки</h3>
+          <div class="state">
+            <strong>Пример ошибки</strong><br />
+            Если не заполнено "Наименование работ" или дата, показываем сообщение.<br /><br />
+            <strong>Пример успеха</strong><br />
+            После сохранения показываем уведомление "Данные сохранены".
+          </div>
+          <div style="height:10px"></div>
+          <button class="btn" onclick="toast('bad','Ошибка','Заполните обязательные поля')">Показать ошибку</button>
+          <button class="btn" onclick="toast('ok','Успех','Задание сохранено')">Показать успех</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // --------------------------
+  // Office screens
+  // --------------------------
+  function renderOfficeInbox() {
+    pageTitle.textContent = "Управляющий офисом - Задания в работе";
+    pageDesc.textContent = "Список задач со статусом в работе и переход в карточку";
+
+    const list = tasks.filter(t => t.status === "в работе");
+    const rows = list.map(t => `
+      <tr>
+        <td><strong>${t.id}</strong><br /><span class="small">${t.store}</span></td>
+        <td>${t.workName}<br /><span class="small">${t.dateFrom} - ${t.dateTo}</span></td>
+        <td>${t.spec}</td>
+        <td>${statusChip(t.status)}</td>
+        <td class="actions">
+          <button class="btn primary" onclick="openOfficeTask('${t.id}')">Открыть</button>
+        </td>
+      </tr>
+    `).join("");
+
+    return `
+      <div class="grid">
+        <div class="card">
+          <h3>Входящие задания</h3>
+
+          <div class="two">
+            <div>
+              <div class="label">Фильтр по специализации</div>
+              <select id="officeSpecFilter">
+                <option value="">все</option>
+                <option value="клининг">клининг</option>
+                <option value="ремонт">ремонт</option>
+                <option value="кладовщик">кладовщик</option>
+              </select>
+            </div>
+            <div>
+              <div class="label">Поиск по магазину или работам</div>
+              <input id="officeSearch" placeholder="например, Магазин 7" />
+            </div>
+          </div>
+
+          <div style="height:10px"></div>
+          <div class="actions">
+            <button class="btn" onclick="applyOfficeFilters()">Применить фильтры</button>
+            <button class="btn" onclick="toast('info','Подсказка','Открой задание и назначь специалистов или создай заявку HR')">Подсказка</button>
+          </div>
+
+          <div style="height:12px"></div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Работы и даты</th>
+                <th>Специализация</th>
+                <th>Статус</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="officeTableBody">
+              ${rows || `<tr><td colspan="5"><div class="state"><strong>Нет заданий</strong><br />Все заявки обработаны</div></td></tr>`}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h3>Сценарий</h3>
+          <div class="state">
+            <strong>1) Открыть карточку задания</strong><br />
+            Посмотреть параметры и требования.<br /><br />
+            <strong>2) Подобрать исполнителей</strong><br />
+            Система предлагает специалистов из "Персонал" по специализации.<br /><br />
+            <strong>3) Если кандидатов нет</strong><br />
+            Создать заявку на подбор HR.
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderOfficeTask(taskId) {
+    const t = tasks.find(x => x.id === taskId) || tasks[0];
+    state.selectedTaskId = t.id;
+
+    pageTitle.textContent = "Управляющий офисом - Карточка задания";
+    pageDesc.textContent = "Подбор специалистов из базы и изменение статуса";
+
+    const candidates = personnel.filter(p => p.spec === t.spec);
+    const candRows = candidates.map(p => `
+      <tr>
+        <td><strong>${p.name}</strong><br /><span class="small">${p.id}</span></td>
+        <td>${p.spec}</td>
+        <td>${p.type}</td>
+        <td>${p.city}</td>
+        <td>${p.rating}</td>
+        <td class="actions">
+          <button class="btn primary" onclick="assignPerson('${t.id}','${p.id}')">Назначить</button>
+        </td>
+      </tr>
+    `).join("");
+
+    const assignees = t.assignees.map(pid => personnel.find(p => p.id === pid)).filter(Boolean);
+    const assignedHtml = assignees.length
+      ? `<ul>${assignees.map(a => `<li><strong>${a.name}</strong> (${a.spec}, ${a.type})</li>`).join("")}</ul>`
+      : `<div class="state"><strong>Исполнители не назначены</strong><br />Выбери исполнителя из списка</div>`;
+
+    return `
+      <div class="grid">
+        <div class="card">
+          <h3>Задание ${t.id}</h3>
+          <div class="chips">
+            ${statusChip(t.status)}
+            <span class="chip">${t.store}</span>
+            <span class="chip">${t.spec}</span>
+          </div>
+
+          <div style="height:12px"></div>
+          <div class="two">
+            <div>
+              <div class="label">Наименование работ</div>
+              <div><strong>${escapeHtml(t.workName)}</strong></div>
+            </div>
+            <div>
+              <div class="label">Даты</div>
+              <div><strong>${t.dateFrom} - ${t.dateTo}</strong></div>
+            </div>
+          </div>
+
+          <div style="height:10px"></div>
+          <div>
+            <div class="label">Пожелания</div>
+            <div class="muted">${escapeHtml(t.wishes)}</div>
+          </div>
+
+          <div style="height:12px"></div>
+          <div class="actions">
+            <button class="btn" onclick="backToOfficeInbox()">Назад</button>
+            <button class="btn danger" onclick="cancelTask('${t.id}')">Отменить</button>
+            <button class="btn" onclick="closeTask('${t.id}')">Закрыть</button>
+          </div>
+
+          <div style="height:12px"></div>
+          <h3>Назначенные исполнители</h3>
+          ${assignedHtml}
+        </div>
+
+        <div class="card">
+          <h3>Подбор исполнителей (Персонал)</h3>
+          <div class="small">Фильтрация по специализации задания: <strong>${t.spec}</strong></div>
+
+          <div style="height:10px"></div>
+          ${candidates.length ? `
+            <table>
+              <thead>
+                <tr>
+                  <th>Сотрудник</th>
+                  <th>Спец</th>
+                  <th>Тип</th>
+                  <th>Город</th>
+                  <th>Рейтинг</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                ${candRows}
+              </tbody>
+            </table>
+          ` : `
+            <div class="state">
+              <strong>Подходящих специалистов нет</strong><br />
+              Можно создать заявку на подбор для HR.
+            </div>
+            <div style="height:10px"></div>
+            <button class="btn primary" onclick="createHrRequestFromTask('${t.id}')">Создать заявку на подбор</button>
+          `}
+
+          <div style="height:12px"></div>
+          <div class="state">
+            <strong>Логика статусов</strong><br />
+            После назначения исполнителя статус должен стать "выполнен".<br />
+            После фактического выполнения можно установить "закрыт".
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // --------------------------
+  // HR screens
+  // --------------------------
+  function renderHrList() {
+    pageTitle.textContent = "Специалист HR - Список заявок на подбор";
+    pageDesc.textContent = "Просмотр заявок и переход в карточку для назначения специалистов";
+
+    const rows = hrRequests.map(r => `
+      <tr>
+        <td><strong>${r.id}</strong><br /><span class="small">из ${r.fromTaskId}</span></td>
+        <td>${r.workName}<br /><span class="small">${r.dates}</span></td>
+        <td>${r.spec}</td>
+        <td>${statusChip(r.status)}</td>
+        <td class="actions">
+          <button class="btn primary" onclick="openHrCard('${r.id}')">Открыть</button>
+        </td>
+      </tr>
+    `).join("");
+
+    return `
+      <div class="grid">
+        <div class="card">
+          <h3>Заявки на подбор</h3>
+
+          <div class="two">
+            <div>
+              <div class="label">Фильтр по статусу</div>
+              <select id="hrStatusFilter">
+                <option value="">все</option>
+                <option value="в работе">в работе</option>
+                <option value="закрыт">закрыт</option>
+              </select>
+            </div>
+            <div>
+              <div class="label">Поиск</div>
+              <input id="hrSearch" placeholder="например, ремонт" />
+            </div>
+          </div>
+
+          <div style="height:10px"></div>
+          <div class="actions">
+            <button class="btn" onclick="applyHrFilters()">Применить фильтры</button>
+            <button class="btn" onclick="toast('info','Подсказка','Открой заявку и назначь специалиста из базы')">Подсказка</button>
+          </div>
+
+          <div style="height:12px"></div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Работы и даты</th>
+                <th>Спец</th>
+                <th>Статус</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="hrTableBody">
+              ${rows || `<tr><td colspan="5"><div class="state"><strong>Заявок нет</strong><br />Все заявки закрыты</div></td></tr>`}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h3>Сценарий</h3>
+          <div class="state">
+            <strong>1) Открыть заявку</strong><br />
+            Изучить параметры и требования.<br /><br />
+            <strong>2) Выбрать кандидата</strong><br />
+            Назначить специалиста из базы "Персонал".<br /><br />
+            <strong>3) Закрыть</strong><br />
+            После подтверждения выполнения перевести задачу в "закрыт".
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderHrCard(hrId) {
+    const r = hrRequests.find(x => x.id === hrId) || hrRequests[0];
+    state.selectedHrId = r.id;
+    const t = tasks.find(x => x.id === r.fromTaskId);
+
+    pageTitle.textContent = "Специалист HR - Карточка заявки";
+    pageDesc.textContent = "Назначение специалиста и закрытие";
+
+    const candidates = personnel.filter(p => p.spec === r.spec);
+    const candRows = candidates.map(p => `
+      <tr>
+        <td><strong>${p.name}</strong><br /><span class="small">${p.id}</span></td>
+        <td>${p.type}</td>
+        <td>${p.city}</td>
+        <td>${p.rating}</td>
+        <td class="actions">
+          <button class="btn primary" onclick="hrAssign('${r.id}','${p.id}')">Назначить</button>
+        </td>
+      </tr>
+    `).join("");
+
+    const taskPart = t ? `
+      <div class="state">
+        <strong>Связанное задание</strong><br />
+        ${t.id} - ${escapeHtml(t.workName)}<br />
+        Статус: ${t.status}
+      </div>
+    ` : `
+      <div class="state">
+        <strong>Связанное задание не найдено</strong><br />
+        Пример ошибки связности данных.
+      </div>
+    `;
+
+    return `
+      <div class="grid">
+        <div class="card">
+          <h3>Заявка ${r.id}</h3>
+          <div class="chips">
+            ${statusChip(r.status)}
+            <span class="chip">из ${r.fromTaskId}</span>
+            <span class="chip">${r.spec}</span>
+          </div>
+
+          <div style="height:12px"></div>
+          <div class="label">Комментарий</div>
+          <div class="muted">${escapeHtml(r.comment)}</div>
+
+          <div style="height:12px"></div>
+          ${taskPart}
+
+          <div style="height:12px"></div>
+          <div class="actions">
+            <button class="btn" onclick="backToHrList()">Назад</button>
+            <button class="btn primary" onclick="closeHrRequest('${r.id}')">Закрыть заявку</button>
+          </div>
+
+          <div style="height:12px"></div>
+          <div class="state">
+            <strong>Уведомления</strong><br />
+            При назначении показываем успех. При ошибке валидации показываем ошибку.
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Кандидаты (Персонал)</h3>
+          ${candidates.length ? `
+            <table>
+              <thead>
+                <tr>
+                  <th>Сотрудник</th>
+                  <th>Тип</th>
+                  <th>Город</th>
+                  <th>Рейтинг</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                ${candRows}
+              </tbody>
+            </table>
+          ` : `
+            <div class="state">
+              <strong>Кандидатов нет</strong><br />
+              Можно зафиксировать невозможность подбора и сообщить офису.
+            </div>
+            <div style="height:10px"></div>
+            <button class="btn" onclick="toast('bad','Ошибка','Кандидаты отсутствуют')">Показать ошибку</button>
+          `}
+        </div>
+      </div>
+    `;
+  }
+
+  // --------------------------
+  // Actions (имитация логики)
+  // --------------------------
+  function newTask() {
+    openModal(
+      "Создание задания",
+      "Заполни поля и сохрани",
+      `
+        <div class="two">
+          <div>
+            <div class="label">Наименование работ</div>
+            <input id="mWork" placeholder="например, уборка территории" />
+          </div>
+          <div>
+            <div class="label">Специализация</div>
+            <select id="mSpec">
+              <option value="клининг">клининг</option>
+              <option value="ремонт">ремонт</option>
+              <option value="кладовщик">кладовщик</option>
+              <option value="прочее">прочее</option>
+            </select>
+          </div>
+        </div>
+        <div style="height:10px"></div>
+        <div class="two">
+          <div>
+            <div class="label">Дата начала</div>
+            <input id="mFrom" type="date" />
+          </div>
+          <div>
+            <div class="label">Дата окончания</div>
+            <input id="mTo" type="date" />
+          </div>
+        </div>
+        <div style="height:10px"></div>
+        <div>
+          <div class="label">Пожелания</div>
+          <textarea id="mWish" placeholder="минимальный набор требований"></textarea>
+        </div>
+      `,
+      [
+        { label: "Отмена", kind: "", onClick: () => {} },
+        { label: "Сохранить", kind: "primary", onClick: () => {
+          const work = (document.getElementById("mWork") || {}).value || "";
+          const from = (document.getElementById("mFrom") || {}).value || "";
+          const to = (document.getElementById("mTo") || {}).value || "";
+          if (!work.trim() || !from || !to) {
+            toast("bad", "Ошибка", "Заполните наименование и даты");
+            return;
+          }
+          const id = "SR-" + String(Math.floor(100 + Math.random() * 900));
+          tasks.unshift({
+            id,
+            workName: work.trim(),
+            dateFrom: from,
+            dateTo: to,
+            wishes: (document.getElementById("mWish") || {}).value || "",
+            spec: (document.getElementById("mSpec") || {}).value || "прочее",
+            status: "новый",
+            store: "Магазин 12",
+            assignees: []
+          });
+          toast("ok", "Успех", "Задание создано со статусом новый");
+          state.screen = "store_form";
+          state.selectedTaskId = id;
+          render();
+        }}
+      ]
+    );
+  }
+
+  function goEditTask(id) {
+    state.selectedTaskId = id;
+    state.screen = "store_form";
+    state.uiState = "normal";
+    render();
+  }
+
+  function saveTask(id) {
+    const t = tasks.find(x => x.id === id);
+    if (!t) { toast("bad","Ошибка","Задание не найдено"); return; }
+
+    const workName = document.getElementById("fWorkName")?.value || "";
+    const dateFrom = document.getElementById("fDateFrom")?.value || "";
+    const dateTo = document.getElementById("fDateTo")?.value || "";
+
+    if (!workName.trim() || !dateFrom || !dateTo) {
+      toast("bad", "Ошибка", "Заполните обязательные поля");
+      return;
+    }
+
+    // Ограничение: редактирование только для "новый"
+    if (t.status !== "новый") {
+      toast("bad", "Ошибка", "Редактирование доступно только в статусе новый");
+      return;
+    }
+
+    t.workName = workName.trim();
+    t.spec = document.getElementById("fSpec")?.value || t.spec;
+    t.dateFrom = dateFrom;
+    t.dateTo = dateTo;
+    t.wishes = document.getElementById("fWishes")?.value || t.wishes;
+
+    toast("ok", "Успех", "Данные сохранены");
+    render();
+  }
+
+  function sendTask(id) {
+    const t = tasks.find(x => x.id === id);
+    if (!t) { toast("bad","Ошибка","Задание не найдено"); return; }
+
+    // Валидация перед отправкой
+    if (!t.workName || !t.dateFrom || !t.dateTo) {
+      toast("bad", "Ошибка", "Нельзя отправить: заполните обязательные поля");
+      return;
+    }
+
+    if (t.status === "отменен") {
+      toast("bad", "Ошибка", "Нельзя отправить: задание отменено");
+      return;
+    }
+
+    openModal(
+      "Подтверждение",
+      "Отправить задание в офис?",
+      `<div class="state"><strong>${t.id}</strong><br />Статус изменится на "в работе"</div>`,
+      [
+        { label: "Нет", kind: "", onClick: () => {} },
+        { label: "Да, отправить", kind: "primary", onClick: () => {
+          t.status = "в работе";
+          toast("ok", "Успех", "Задание отправлено в офис");
+          render();
+        }}
+      ]
+    );
+  }
+
+  function cancelTask(id) {
+    const t = tasks.find(x => x.id === id);
+    if (!t) { toast("bad","Ошибка","Задание не найдено"); return; }
+
+    openModal(
+      "Подтверждение",
+      "Отменить задание?",
+      `<div class="state"><strong>${t.id}</strong><br />Статус станет "отменен". Дальнейшая обработка остановится.</div>`,
+      [
+        { label: "Нет", kind: "", onClick: () => {} },
+        { label: "Да, отменить", kind: "danger", onClick: () => {
+          t.status = "отменен";
+          toast("ok", "Успех", "Задание отменено");
+          render();
+        }}
+      ]
+    );
+  }
+
+  function closeTask(id) {
+    const t = tasks.find(x => x.id === id);
+    if (!t) { toast("bad","Ошибка","Задание не найдено"); return; }
+
+    openModal(
+      "Подтверждение",
+      "Закрыть задание?",
+      `<div class="state"><strong>${t.id}</strong><br />Статус станет "закрыт".</div>`,
+      [
+        { label: "Отмена", kind: "", onClick: () => {} },
+        { label: "Закрыть", kind: "primary", onClick: () => {
+          t.status = "закрыт";
+          toast("ok", "Успех", "Задание закрыто");
+          render();
+        }}
+      ]
+    );
+  }
+
+  function openOfficeTask(id) {
+    state.selectedTaskId = id;
+    state.screen = "office_task";
+    state.uiState = "normal";
+    render();
+  }
+
+  function backToOfficeInbox() {
+    state.screen = "office_inbox";
+    state.uiState = "normal";
+    render();
+  }
+
+  function assignPerson(taskId, personId) {
+    const t = tasks.find(x => x.id === taskId);
+    if (!t) { toast("bad","Ошибка","Задание не найдено"); return; }
+
+    const p = personnel.find(x => x.id === personId);
+    if (!p) { toast("bad","Ошибка","Сотрудник не найден"); return; }
+
+    openModal(
+      "Подтверждение",
+      "Назначить исполнителя?",
+      `<div class="state"><strong>${p.name}</strong><br />на задание ${t.id}</div>`,
+      [
+        { label: "Нет", kind: "", onClick: () => {} },
+        { label: "Назначить", kind: "primary", onClick: () => {
+          if (!t.assignees.includes(personId)) t.assignees.push(personId);
+          t.status = "выполнен";
+          toast("ok", "Успех", "Исполнитель назначен, статус выполнен");
+          render();
+        }}
+      ]
+    );
+  }
+
+  function createHrRequestFromTask(taskId) {
+    const t = tasks.find(x => x.id === taskId);
+    if (!t) { toast("bad","Ошибка","Задание не найдено"); return; }
+
+    openModal(
+      "Создание заявки на подбор",
+      "Заявка уйдет специалисту HR",
+      `
+        <div class="state">
+          <strong>Задание ${t.id}</strong><br />
+          ${escapeHtml(t.workName)}<br />
+          Специализация: ${t.spec}<br />
+          Даты: ${t.dateFrom}<br />
+        </div>
+        <div style="height:10px"></div>
+        <div class="label">Комментарий для HR</div>
+        <textarea id="mHrComment" placeholder="например, нужен 1 человек, опыт обязателен"></textarea>
+      `,
+      [
+        { label: "Отмена", kind: "", onClick: () => {} },
+        { label: "Создать", kind: "primary", onClick: () => {
+          const comment = document.getElementById("mHrComment")?.value || "";
+          const id = "HR-" + String(Math.floor(200 + Math.random() * 800));
+          hrRequests.unshift({
+            id,
+            fromTaskId: t.id,
+            workName: t.workName,
+            dates: t.dateFrom,
+            spec: t.spec,
+            status: "в работе",
+            comment: comment.trim() || "Комментарий не указан"
+          });
+          toast("ok", "Успех", "Заявка на подбор создана");
+          state.role = "hr";
+          roleSelect.value = "hr";
+          state.screen = "hr_list";
+          renderNav();
+          render();
+        }}
+      ]
+    );
+  }
+
+  function openHrCard(id) {
+    state.selectedHrId = id;
+    state.screen = "hr_card";
+    state.uiState = "normal";
+    render();
+  }
+
+  function backToHrList() {
+    state.screen = "hr_list";
+    state.uiState = "normal";
+    render();
+  }
+
+  function hrAssign(hrId, personId) {
+    const r = hrRequests.find(x => x.id === hrId);
+    if (!r) { toast("bad","Ошибка","Заявка не найдена"); return; }
+
+    const t = tasks.find(x => x.id === r.fromTaskId);
+    const p = personnel.find(x => x.id === personId);
+
+    if (!p) { toast("bad","Ошибка","Сотрудник не найден"); return; }
+    if (!t) { toast("bad","Ошибка","Связанное задание не найдено"); return; }
+
+    openModal(
+      "Подтверждение",
+      "Назначить специалиста по заявке?",
+      `<div class="state"><strong>${p.name}</strong><br />Заявка ${r.id}, задание ${t.id}</div>`,
+      [
+        { label: "Нет", kind: "", onClick: () => {} },
+        { label: "Назначить", kind: "primary", onClick: () => {
+          if (!t.assignees.includes(personId)) t.assignees.push(personId);
+          t.status = "выполнен";
+          toast("ok", "Успех", "Специалист назначен, задание выполнен");
+          render();
+        }}
+      ]
+    );
+  }
+
+  function closeHrRequest(hrId) {
+    const r = hrRequests.find(x => x.id === hrId);
+    if (!r) { toast("bad","Ошибка","Заявка не найдена"); return; }
+
+    openModal(
+      "Подтверждение",
+      "Закрыть заявку на подбор?",
+      `<div class="state"><strong>${r.id}</strong><br />Статус станет "закрыт".</div>`,
+      [
+        { label: "Отмена", kind: "", onClick: () => {} },
+        { label: "Закрыть", kind: "primary", onClick: () => {
+          r.status = "закрыт";
+          toast("ok", "Успех", "Заявка закрыта");
+          render();
+        }}
+      ]
+    );
+  }
+
+  // --------------------------
+  // Filters
+  // --------------------------
+  function applyStoreFilters() {
+    const status = document.getElementById("storeStatusFilter")?.value || "";
+    const q = (document.getElementById("storeSearch")?.value || "").toLowerCase();
+
+    const filtered = tasks.filter(t => {
+      const okStatus = status ? t.status === status : true;
+      const okQ = q ? (t.workName.toLowerCase().includes(q) || t.store.toLowerCase().includes(q)) : true;
+      return okStatus && okQ;
+    });
+
+    const body = document.getElementById("storeTableBody");
+    if (!body) return;
+
+    body.innerHTML = filtered.map(t => `
+      <tr>
+        <td><strong>${t.id}</strong><br /><span class="small">${t.store}</span></td>
+        <td>${t.workName}<br /><span class="small">${t.dateFrom} - ${t.dateTo}</span></td>
+        <td>${statusChip(t.status)}</td>
+        <td class="actions">
+          <button class="btn" onclick="goEditTask('${t.id}')">Открыть</button>
+          <button class="btn primary" onclick="sendTask('${t.id}')">Отправить</button>
+          <button class="btn danger" onclick="cancelTask('${t.id}')">Отменить</button>
+        </td>
+      </tr>
+    `).join("") || `<tr><td colspan="4"><div class="state"><strong>Ничего не найдено</strong><br />Измени фильтры</div></td></tr>`;
+
+    toast("info", "Фильтры", "Список обновлен");
+  }
+
+  function applyOfficeFilters() {
+    const spec = document.getElementById("officeSpecFilter")?.value || "";
+    const q = (document.getElementById("officeSearch")?.value || "").toLowerCase();
+
+    const filtered = tasks.filter(t => {
+      if (t.status !== "в работе") return false;
+      const okSpec = spec ? t.spec === spec : true;
+      const okQ = q ? (t.workName.toLowerCase().includes(q) || t.store.toLowerCase().includes(q)) : true;
+      return okSpec && okQ;
+    });
+
+    const body = document.getElementById("officeTableBody");
+    if (!body) return;
+
+    body.innerHTML = filtered.map(t => `
+      <tr>
+        <td><strong>${t.id}</strong><br /><span class="small">${t.store}</span></td>
+        <td>${t.workName}<br /><span class="small">${t.dateFrom} - ${t.dateTo}</span></td>
+        <td>${t.spec}</td>
+        <td>${statusChip(t.status)}</td>
+        <td class="actions">
+          <button class="btn primary" onclick="openOfficeTask('${t.id}')">Открыть</button>
+        </td>
+      </tr>
+    `).join("") || `<tr><td colspan="5"><div class="state"><strong>Ничего не найдено</strong><br />Измени фильтры</div></td></tr>`;
+
+    toast("info", "Фильтры", "Список обновлен");
+  }
+
+  function applyHrFilters() {
+    const status = document.getElementById("hrStatusFilter")?.value || "";
+    const q = (document.getElementById("hrSearch")?.value || "").toLowerCase();
+
+    const filtered = hrRequests.filter(r => {
+      const okStatus = status ? r.status === status : true;
+      const okQ = q ? (r.workName.toLowerCase().includes(q) || r.spec.toLowerCase().includes(q) || r.id.toLowerCase().includes(q)) : true;
+      return okStatus && okQ;
+    });
+
+    const body = document.getElementById("hrTableBody");
+    if (!body) return;
+
+    body.innerHTML = filtered.map(r => `
+      <tr>
+        <td><strong>${r.id}</strong><br /><span class="small">из ${r.fromTaskId}</span></td>
+        <td>${r.workName}<br /><span class="small">${r.dates}</span></td>
+        <td>${r.spec}</td>
+        <td>${statusChip(r.status)}</td>
+        <td class="actions">
+          <button class="btn primary" onclick="openHrCard('${r.id}')">Открыть</button>
+        </td>
+      </tr>
+    `).join("") || `<tr><td colspan="5"><div class="state"><strong>Ничего не найдено</strong><br />Измени фильтры</div></td></tr>`;
+
+    toast("info", "Фильтры", "Список обновлен");
+  }
+
+  // --------------------------
+  // Render
+  // --------------------------
+  function render() {
+    const uiStateHtml = renderUiState();
+    if (uiStateHtml) {
+      content.innerHTML = uiStateHtml;
+      return;
+    }
+
+    if (state.role === "store" && state.screen === "store_list") {
+      content.innerHTML = renderStoreList();
+      return;
+    }
+    if (state.role === "store" && state.screen === "store_form") {
+      content.innerHTML = renderStoreForm(state.selectedTaskId);
+      return;
+    }
+    if (state.role === "office" && state.screen === "office_inbox") {
+      content.innerHTML = renderOfficeInbox();
+      return;
+    }
+    if (state.role === "office" && state.screen === "office_task") {
+      content.innerHTML = renderOfficeTask(state.selectedTaskId);
+      return;
+    }
+    if (state.role === "hr" && state.screen === "hr_list") {
+      content.innerHTML = renderHrList();
+      return;
+    }
+    if (state.role === "hr" && state.screen === "hr_card") {
+      content.innerHTML = renderHrCard(state.selectedHrId);
+      return;
+    }
+
+    content.innerHTML = `<div class="card"><div class="state"><strong>Экран не найден</strong></div></div>`;
+  }
+
+  function escapeHtml(s) {
+    return String(s ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
+  // --------------------------
+  // Controls
+  // --------------------------
+  roleSelect.addEventListener("change", (e) => {
+    state.role = e.target.value;
+    state.screen = screens[state.role][0].id;
+    state.uiState = "normal";
+    renderNav();
+    render();
+  });
+
+  document.getElementById("btnSimLoad").onclick = () => { state.uiState = "loading"; render(); };
+  document.getElementById("btnSimNoAccess").onclick = () => { state.uiState = "noaccess"; render(); };
+  document.getElementById("btnSimEmpty").onclick = () => { state.uiState = "empty"; render(); };
+
+  // Hotkey: Esc closes modal
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+  });
+
+  // Expose some functions for inline onclick
+  window.newTask = newTask;
+  window.goEditTask = goEditTask;
+  window.saveTask = saveTask;
+  window.sendTask = sendTask;
+  window.cancelTask = cancelTask;
+  window.closeTask = closeTask;
+  window.openOfficeTask = openOfficeTask;
+  window.backToOfficeInbox = backToOfficeInbox;
+  window.assignPerson = assignPerson;
+  window.createHrRequestFromTask = createHrRequestFromTask;
+  window.openHrCard = openHrCard;
+  window.backToHrList = backToHrList;
+  window.hrAssign = hrAssign;
+  window.closeHrRequest = closeHrRequest;
+  window.applyStoreFilters = applyStoreFilters;
+  window.applyOfficeFilters = applyOfficeFilters;
+  window.applyHrFilters = applyHrFilters;
+
+  // Init
+  renderNav();
+  render();
+</script>
+</body>
+</html>
