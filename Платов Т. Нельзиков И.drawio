@@ -1,0 +1,130 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="BPMN Подробная схема">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Pool -->
+        <mxCell id="pool" value="Процесс организации сервисных работ" style="swimlane;horizontal=0;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1200" height="700" as="geometry"/>
+        </mxCell>
+
+        <!-- Lanes -->
+        <mxCell id="lane1" value="Управляющий магазином" style="swimlane;horizontal=1;" vertex="1" parent="pool">
+          <mxGeometry x="0" y="0" width="1200" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="lane2" value="Управляющий офисом" style="swimlane;horizontal=1;" vertex="1" parent="pool">
+          <mxGeometry x="0" y="230" width="1200" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="lane3" value="HR-специалист" style="swimlane;horizontal=1;" vertex="1" parent="pool">
+          <mxGeometry x="0" y="460" width="1200" height="240" as="geometry"/>
+        </mxCell>
+
+        <!-- Events -->
+        <mxCell id="start1" value="Возникла потребность в сервисных работах" style="ellipse;whiteSpace=wrap;aspect=fixed;" vertex="1" parent="lane1">
+          <mxGeometry x="40" y="80" width="40" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="end1" value="Задание закрыто" style="ellipse;whiteSpace=wrap;aspect=fixed;strokeWidth=3;" vertex="1" parent="lane3">
+          <mxGeometry x="1080" y="550" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Tasks manager store -->
+        <mxCell id="t1" value="Создать задание на сервисные работы
+(статус: новый)" style="rounded=1;whiteSpace=wrap;" vertex="1" parent="lane1">
+          <mxGeometry x="120" y="70" width="220" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t2" value="Редактировать задание" style="rounded=1;whiteSpace=wrap;" vertex="1" parent="lane1">
+          <mxGeometry x="380" y="70" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Gateway -->
+        <mxCell id="g1" value="Задание готово?" style="rhombus;whiteSpace=wrap;" vertex="1" parent="lane1">
+          <mxGeometry x="620" y="80" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t3" value="Отправить задание в офис
+(статус: в работе)" style="rounded=1;whiteSpace=wrap;" vertex="1" parent="lane1">
+          <mxGeometry x="720" y="70" width="220" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Office manager -->
+        <mxCell id="t4" value="Получить и просмотреть задание" style="rounded=1;whiteSpace=wrap;" vertex="1" parent="lane2">
+          <mxGeometry x="120" y="300" width="240" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t5" value="Подобрать специалистов
+из базы персонала" style="rounded=1;whiteSpace=wrap;" vertex="1" parent="lane2">
+          <mxGeometry x="420" y="300" width="260" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="g2" value="Есть подходящие специалисты?" style="rhombus;whiteSpace=wrap;" vertex="1" parent="lane2">
+          <mxGeometry x="720" y="310" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t6" value="Назначить специалистов
+(статус: выполнен)" style="rounded=1;whiteSpace=wrap;" vertex="1" parent="lane2">
+          <mxGeometry x="820" y="300" width="260" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- HR -->
+        <mxCell id="t7" value="Получить заявку на подбор" style="rounded=1;whiteSpace=wrap;" vertex="1" parent="lane3">
+          <mxGeometry x="120" y="540" width="240" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t8" value="Подобрать и назначить специалистов" style="rounded=1;whiteSpace=wrap;" vertex="1" parent="lane3">
+          <mxGeometry x="420" y="540" width="300" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="t9" value="Закрыть задание
+(статус: закрыт)" style="rounded=1;whiteSpace=wrap;" vertex="1" parent="lane3">
+          <mxGeometry x="780" y="540" width="220" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Flows -->
+        <mxCell id="e1" edge="1" parent="1" source="start1" target="t1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="t1" target="t2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="t2" target="g1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="g1" target="t3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="t3" target="t4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="t4" target="t5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="t5" target="g2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="g2" target="t6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="t6" target="t9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="g2" target="t7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="t7" target="t8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="t8" target="t9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="t9" target="end1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
